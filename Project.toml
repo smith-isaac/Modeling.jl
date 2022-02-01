@@ -1,0 +1,7 @@
+name = "Modeling"
+uuid = "8c260c69-540f-4492-b9b0-29f6bf1aa2df"
+authors = ["Isaac Smith <smithisaacr@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
