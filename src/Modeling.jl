@@ -1,6 +1,6 @@
 module Modeling
 
-export StateSpace, DiscreteSS, rk4, eulers, next_x
+export StateSpace, DiscreteSS, rk4, eulers, next_x, get_y
 
 using LinearAlgebra
 
@@ -8,6 +8,16 @@ struct StateSpace
     A::Matrix{Float64}
     B::Vector{Float64}
     C::Matrix{Float64}
+    D::Float64
+
+    function StateSpace(a::Matrix, b::Vector, c::Matrix, d::Float64 = 0.)
+	return new(a, b, c, d)
+    end
+
+    # Creates state space from float values
+    function StateSpace(a::Float64, b::Float64, c::Float64, d::Float64 = 0.)
+	return new(fill(a, (1,1)), [b], fill(c, (1, 1)), d)
+    end
 end
 
 function msd(;m::Float64 = 1., b::Float64 = 1., k::Float64 = 1.)
@@ -20,10 +30,19 @@ end
 
 # Maybe add low- and high-pass filters in here so that I can easily define them. 
 
+function low_pass(wc::Float64)
+    return StateSpace(-wc, 1., wc)
+end
+
+function high_pass(wc::Float64)
+    return StateSpace(-wc, 1., -wc, 1.)
+end
+
 mutable struct DiscreteSS
     Ad::Matrix{Float64}
     Bd::Vector{Float64}
     C::Matrix{Float64}
+    D::Float64
 
     function DiscreteSS(ss::StateSpace, dt::Float64)
 	this = new()
@@ -34,8 +53,17 @@ mutable struct DiscreteSS
 	    this.Bd = inv(ss.A) * (this.Ad - I) * ss.B
 	end
 	this.C = ss.C
+	this.D = ss.D
 	return this
     end
+end
+
+function get_y(ss::StateSpace, x::Vector{Float64}, u::Float64 = 0.)
+    return (ss.C * x)[1, 1] + ss.D * u
+end
+
+function get_y(dss::DiscreteSS, x::Vector{Float64}, u::Float64 = 0.)
+    return (dss.C * x)[1, 1] + dss.D * u
 end
 
 function next_x(dss::DiscreteSS, x::Vector{Float64}, u::Float64 = 0.)
