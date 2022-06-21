@@ -23,6 +23,16 @@ x_{k + 1} &= A_dx_k + B_dx_k
 \end{align}
 $$
 
+where $A_d$ and $B_d$ are defined as follows
+
+$$
+\begin{align}
+A_d &= e^{A\Delta t} \\
+B_d &= A^{-1}\left(A_d - I\right)B \quad \mathrm{if }\det(A) \neq 0 \\
+B_d &= \frac{\Delta t}{2}\left(I + A_d\right)B \quad \mathrm{if } \det(A) = 0
+\end{align}
+$$
+
 Structure is defined as follows
 
 ```julia
