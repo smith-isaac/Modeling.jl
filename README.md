@@ -19,7 +19,7 @@ that when discretized becomes
 $$
 \begin{align}
 y_k &= Cx_k + Du_k \\
-x_{k + 1} &= A_dx__k + B_dx_k
+x_{k + 1} &= A_dx_k + B_dx_k
 \end{align}
 $$
 
