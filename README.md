@@ -5,14 +5,32 @@ This is my Julia package for systems modeling
 ## State Space
 ---
 
+This is a set of functions for State Space modeling techniques of the form
+
+$$
+\begin{align}
+\dot x &= Ax + Bu \\
+y &= Cx + Du
+\end{align}
+$$
+
+that when discretized becomes
+
+$$
+\begin{align}
+y_k &= Cx_k + Du_k \\
+x_{k + 1} &= A_dx__k + B_dx_k
+\end{align}
+$$
+
 Structure is defined as follows
 
 ```julia
 struct StateSpace
-    A::Matrix{Float64}
-    B::Vector{Float64}
-    C::Matrix{Float64}
-    D::Float64
+    A::Matrix{<:Real}
+    B::Vector{<:Real}
+    C::Matrix{<:Real}
+    D::Real
 end
 ```
 Where `D` is by default 0
@@ -58,7 +76,7 @@ Based on a linear approximation between time steps
 `eulers` function in Julia is defined as follows
 
 ```julia
-eulers(xdot::Function, x::Vector{Float64}, dt::Float64, params, u::Float64)
+eulers(xdot::Function, x::Vector{<:Real}, dt::Real, params, u::Real)
 ```
 
 #### 4th Order Runge-Kutta Method
@@ -68,18 +86,18 @@ Much more accurate than Euler's method, and maybe more accurate than discretized
 The `rk4` function would look like this
 
 ```julia
-rk4(xdot::Function, x::Vector{Float64}, dt::Float64, params, u::Float64)
+rk4(xdot::Function, x::Vector{<:Real}, dt::Real, params, u::Real)
 ```
 where `xdot` should be defined as follows
 
 ```julia
-xdot(x::Vector{Float64}, u::Float64)
+xdot(x::Vector{<:Real}, u::Real)
 ```
 and returns the derivative of the vector `x`
 
 The `rk4` function would look like this for state space models
 ```julia
-rk4(ss::StateSpace, x::Vector{Float64}, dt::Float64, u::Float64 = 0.)
+rk4(ss::StateSpace, x::Vector{<:Real}, dt::Real, u::Real = 0.)
 ```
 
 Where `ss` is defined by using the `StateSpace` struct above (using Mass-spring-damper as example)
